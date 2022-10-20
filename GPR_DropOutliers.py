@@ -1,13 +1,23 @@
 """
+Code for the paper ....
+Sean Farrington, Soham Jariwala, Matt Armstrong, Ethan Nigro, Antony Beris, and Norman Wagner
+
 Author: Sean Farrington
-Thu Jun  16
-
-# Apostolidis Model Pseudo Data Machine Learning
+October 20th, 2022
  
-# Gaussian Process Regression
+Gaussian Process Regression for Blood Rheology
 
-# This script includes the necessary hyperparameter tuning
+The main purpose of this script is to make a connection between the physiology and rheology of blood
 
+The physiology of blood is the hematocrit and fibrinogen. The rheolgoy of blood is the Casson
+parameters of yield stress and viscosity.
+
+The script is sectioned as follows:
+    1. Importing necessary packages and functions
+    2. Defining Gaussian process regression and seed
+    3. Import data from "HornerData_CassonFitTable.xlsx"
+    4. Cross-validation scheme
+    5. Save the model using pickle
 
 """
 
@@ -67,7 +77,7 @@ mpl.rc('legend',fontsize=MEDIUM)
 mpl.rcParams['font.family'] = font
 
 
-#%% Define machine learning models to use
+#%% Define Gaussian process regression and seed
 SEED = 1
 TRAINING_OPTION = 'full' # choose between full or partial
 models = {
@@ -78,7 +88,7 @@ models = {
     }
         }
 
-#%% Model instantiation
+# Model instantiation
 def set_model(name):
     """
     Initialization module for models to be evaluated
@@ -88,17 +98,11 @@ def set_model(name):
         
     return model
 
-#%% Kernel Initialization
+# Kernel Initialization
 def restart_kernels(init_length_scale=1.0):
     """
     Function that calls kernels every time they need to be instanciated.
     """
-    # kernels = [ConstantKernel(constant_value=1.0,constant_value_bounds=(1e-10,1e10))+1.0*RBF(length_scale=init_length_scale,length_scale_bounds=(1e-10,1e10))+1.0*WhiteKernel(noise_level=1.0, noise_level_bounds=(1e-10,1e10)),
-    #             ConstantKernel(constant_value=1.0,constant_value_bounds=(1e-10,1e10))+1.0*DotProduct(sigma_0=1.0,sigma_0_bounds=(1e-15,1e10))+1.0*WhiteKernel(noise_level=1.0, noise_level_bounds=(1e-10,1e10)),
-    #             ConstantKernel(constant_value=1.0,constant_value_bounds=(1e-10,1e10))+1.0*Matern(length_scale=init_length_scale,length_scale_bounds=(1e-10,1e10),nu=0.5)+1.0*WhiteKernel(noise_level=1.0, noise_level_bounds=(1e-10,1e10)),
-    #             ConstantKernel(constant_value=1.0,constant_value_bounds=(1e-10,1e10))+1.0*Matern(length_scale=init_length_scale,length_scale_bounds=(1e-10,1e10),nu=1.5)+1.0*WhiteKernel(noise_level=1.0, noise_level_bounds=(1e-10,1e10)),
-    #             ConstantKernel(constant_value=1.0,constant_value_bounds=(1e-10,1e10))+1.0*Matern(length_scale=init_length_scale,length_scale_bounds=(1e-10,1e10),nu=2.5)+1.0*WhiteKernel(noise_level=1.0, noise_level_bounds=(1e-10,1e10)),
-    #             RationalQuadratic(length_scale=1.0,alpha=1.0,length_scale_bounds=(1e-10,1e10),alpha_bounds=(1e-10,1e5))*1.0*WhiteKernel(noise_level=1.0, noise_level_bounds=(1e-10,1e10))]
     kernels = [ConstantKernel(constant_value=1.0,constant_value_bounds=(1e-10,1e10))+1.0*RBF(length_scale=init_length_scale,length_scale_bounds=(1e-10,1e10))+1.0*WhiteKernel(noise_level=1.0, noise_level_bounds=(1e-10,1e10)),
                 ConstantKernel(constant_value=1.0,constant_value_bounds=(1e-10,1e10))+1.0*Matern(length_scale=init_length_scale,length_scale_bounds=(1e-10,1e10),nu=0.5)+1.0*WhiteKernel(noise_level=1.0, noise_level_bounds=(1e-10,1e10)),
                 ConstantKernel(constant_value=1.0,constant_value_bounds=(1e-10,1e10))+1.0*Matern(length_scale=init_length_scale,length_scale_bounds=(1e-10,1e10),nu=1.5)+1.0*WhiteKernel(noise_level=1.0, noise_level_bounds=(1e-10,1e10)),
@@ -107,11 +111,11 @@ def restart_kernels(init_length_scale=1.0):
 
     return kernels
 
-#%% Choose training loop
+# Choose training loop
 if TRAINING_OPTION == 'full':
     best_models_names = ['gpr','gpr']
-
-#%% Import Data From "Prepare_Data.py"
+  
+#%% Import data from "HornerData_CassonFitTable.xlsx"
 """
 What does our data look like ?
 
@@ -190,7 +194,7 @@ for j,target in enumerate(TARGETS):
     best_trained_models.append(best_model)
     
 
-#%% Choose best kernels for Gaussian Regression    
+# Choose best kernels for Gaussian Regression    
 kernel1 = best_trained_models[0].kernel
 kernel2 = best_trained_models[1].kernel
 
@@ -386,165 +390,3 @@ df = pd.DataFrame({
     "Casson Viscosity Apostolidis, mPa":mu_apost})
 
 df.to_excel("Surface Plot Data _ Casson Viscosity.xlsx",index=False)
-
-#%% Figures to show where the data comes from
-# Casson viscosity
-# fig, ax = plt.subplots(figsize=(5,4)) 
-# clr1 = 'darkblue'
-# clr2 = 'gold'
-
-# ax.plot(X_test[:,0],visc_test,'s',color=clr1)
-# ax.plot(X_test[:,0],visc_pred,'s',color=clr2)
-
-# # Limits
-# xmin,xmax,ymin,ymax = ax.axis()
-
-# # Dotted lines
-# p = 6 # which point to use?
-# ax.plot([xmin,X_test[p,0]],[visc_test[p],visc_test[p]],'--',color=clr1)
-# ax.plot([xmin,X_test[p,0]],[visc_pred[p],visc_pred[p]],'--',color=clr2)
-
-# ax.text(1.002*xmin,1.003*visc_test[p],
-#         f'Test Point = {round(visc_test[p,0],2)}',color=clr1)
-# ax.text(1.002*xmin,1.003*visc_pred[p],
-#         f'Prediction = {round(visc_pred[p],2)}',color=clr2)
-
-# ax.set_xlabel('Hematocrit, %')
-# ax.set_ylabel('Casson Viscosity, mPa.s')
-
-# ax.set_ylim(ymin,ymax)
-# ax.set_xlim(xmin,xmax)
-
-# for side in ['top','right']:
-#     ax.spines[side].set_visible(False)
-
-# save_fig('Illustrate Data Retrieval pt.1')
-# plt.show()
-
-
-# # Predicted vs. Actual for demonstration
-# fig, ax = plt.subplots(figsize=(5,4))
-# ax.plot(visc_test,visc_pred,
-#               'o',
-#               markersize= 5,
-#               color='red',
-#               label='Testing Data',
-#               zorder = 10)
-
-# xmin,xmax,ymin,ymax = ax.axis()
-
-# ax.plot([xmin,xmax],[ymin,ymax],color='black')
-
-# # Actual Value
-# ax.plot([visc_test[p],visc_test[p]],[ymin,visc_pred[p]],'--',color=clr1)
-# ax.text(1.002*visc_test[p],(ymin+visc_pred[p])/2,
-#         f'Test Point = {round(visc_test[p,0],2)}',color=clr1)
-# # Predicted Value
-# ax.plot([xmin,visc_test[p]],[visc_pred[p],visc_pred[p]],'--',color=clr2)
-# ax.text((xmin+visc_test[p])/2,1.003*visc_pred[p],
-#         f'Prediction = {round(visc_pred[p],2)}',color=clr2,
-#         horizontalalignment='center')
-
-# ax.set_ylim(ymin,ymax)
-# ax.set_xlim(xmin,xmax)
-
-# ax.set_xlabel('Actual Casson Viscosity')
-# ax.set_ylabel('Predicted Casson Viscosity')
-
-# ax.spines['top'].set_visible(False)
-# ax.spines['right'].set_visible(False)
-
-# save_fig('Illustrate Data Retrieval pt.2')
-# plt.show()
-
-
-#%% Plot Decrease in error with data points
-# fig, ax = plt.subplots(2,1,figsize=(8,6))
-# barwidth = 0.25
-# lw = 3
-# br1 = np.arange(len(N))
-# br2 = [x + barwidth for x in br1]
-
-# # Plot for Casson Yield Stress error
-# ax[0].bar(br1,mae_yield_pred,
-#         color='red',
-#         width = barwidth,
-#         linewidth = lw,
-#         label='Testing Error',
-#         edgecolor='black')
-# ax[0].bar(br2,mae_yield_train,
-#         color='blue',
-#         width = barwidth,
-#         linewidth = lw,
-#         label='Training Error',
-#         edgecolor='black')
-
-# ax[0].set_xlabel('Number of Data Points, N')
-# ax[0].set_ylabel('Mean Absolute Error, mPa')
-# ax[0].set_title('Casson Yield Stress')
-# ax[0].set_xticks([r+0.5*barwidth for r in range(len(N))])
-# ax[0].set_xticklabels(N)
-
-# ax[0].legend()
-
-# # Plot for Casson Viscosity Error
-# ax[1].bar(br1,mae_mu_pred,
-#         color='red',
-#         width = barwidth,
-#         linewidth = lw,
-#         label='Testing Error',
-#         edgecolor='black')
-# ax[1].bar(br2,mae_mu_train,
-#         color='blue',
-#         width = barwidth,
-#         linewidth = lw,
-#         label='Training Error',
-#         edgecolor='black')
-
-# ax[1].set_xlabel('Number of Data Points, N')
-# ax[1].set_ylabel('Mean Absolute Error, mPa.s')
-# ax[1].set_title('Casson Viscosity')
-# ax[1].set_xticks([r+0.5*barwidth for r in range(len(N))])
-# ax[1].set_xticklabels(N)
-
-# save_fig('Yield Stress Error versus Data')
-# plt.show()
-
-#%% Plot yield stress vs hematocrit
-
-# ind = [i[0] for i in sorted(enumerate(X_test[:,0]), key=lambda x:x[1])]
-    
-# H_sort = X_test[:,0][np.ix_(ind)]
-
-# yield_test_sort = yield_test[np.ix_(ind)]
-# yield_test_noise_sort = yield_test_noise[np.ix_(ind)]
-# yield_pred_sort = yield_pred[np.ix_(ind)]
-
-# visc_test_sort = visc_test[np.ix_(ind)]
-# visc_test_noise_sort = visc_test_noise[np.ix_(ind)]
-# visc_pred_sort = visc_pred[np.ix_(ind)]
-
-
-# fig, ax = plt.subplots()
-# ax.plot(H_sort,yield_test_sort,'k-',label='Exact Apostolidis')
-# ax.plot(H_sort,yield_test_noise_sort,'rs',label='Noisy Apostolidis')
-# ax.plot(H_sort,yield_pred_sort,'b-',label='GPR Prediction')
-# ax.set_ylabel('Casson Yield Stress, mPa')
-# ax.set_xlabel('Hematocrit, %')
-
-# ax.legend()
-
-# plt.show()
-
-# fig, ax = plt.subplots()
-# ax.plot(H_sort,visc_test_sort,'k-',label='Exact Apostolidis')
-# ax.plot(H_sort,visc_test_noise_sort,'rs',label='Noisy Apostolidis')
-# ax.plot(H_sort,visc_pred_sort,'b-',label='GPR Prediction')
-# ax.set_ylabel('Casson Viscosity, mPa.s')
-# ax.set_xlabel('Hematocrit, %')
-
-# ax.legend()
-
-# plt.show()
-
-
