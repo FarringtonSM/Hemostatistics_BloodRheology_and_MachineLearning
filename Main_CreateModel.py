@@ -216,20 +216,17 @@ gp_visc.fit(X,y[:,1])
 #%% Save the models using pickle
 
 filename1 = 'finalized_model_yieldstress.sav'
-filename2 = 'finalized_mode_viscosity.sav'
-pickle.dump(gp_yield, open(filename1, 'wb'))
+filename2 = 'finalized_model_viscosity.sav'
+filename3 = 'finalized_model_datasplit.pkl'
+
+pickle.dump(gp_yield,open(filename1, 'wb'))
 pickle.dump(gp_visc,open(filename2,'wb'))
-
-
-#%% Load the models using pickle
-# I may put this to another .py file so the figures can be generated separately
-gp_yield = pickle.load(open(filename1,'rb'))
-gp_visc = pickle.load(open(filename2,'rb'))
-
-result1 = gp_yield.score(X_test,y_test[:,0])
-result2 = gp_visc.score(X_test,y_test[:,1])
-# print(result1,result2)
-
+datasplits = {
+    "X":X,
+    "y":y,
+    "X_test":X_test,
+    "y_test":y_test}
+pickle.dump(datasplits,open(filename3,'wb'))
 
 #%% Make predictions on Casson parameters
 yield_pred, std_yield = gp_yield.predict(X_test, return_std=True)
@@ -366,6 +363,7 @@ ys_std = ys_std.flatten()
 mu = mu.flatten()
 mu_std = mu_std.flatten()
 
+# Import and use function that calculates Apostolidis model predictions
 from Apostolidis import Apostolidis
 p1 = Apostolidis(Hs/100,cfs/1000)
 ys_apost,mu_apost,a,b = p1.apostFunc()
@@ -373,6 +371,7 @@ ys_apost,mu_apost,a,b = p1.apostFunc()
 ys_apost = np.array([ys_apost]).reshape(N**2,)
 mu_apost = np.array([mu_apost]).reshape(N**2,)
 
+# Save two excel files for creating surface plots of Casson viscosity and yield stress
 df = pd.DataFrame({
     "Hematocrit, %":Hs,
     "Fibrinogen, mg/dL":cfs,
