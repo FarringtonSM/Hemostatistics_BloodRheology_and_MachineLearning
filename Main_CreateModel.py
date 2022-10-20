@@ -156,16 +156,6 @@ NR_FEATURES = ['Hematocrit','Fibrinogen']
 from sklearn.model_selection import train_test_split
 X,X_test,y,y_test = train_test_split(X_DATA,y_DATA,test_size=0.3,random_state=SEED) 
 
-
-test = {
-        'X':X,
-        'y':y,
-        'X_test':X_test,
-        'y_test':y_test
-        }
-
-pickle.dump(test,open('TestingData.npy','wb'))
-
 mu = X.mean(axis=0)
 sigma = X.mean(axis=0)
 
