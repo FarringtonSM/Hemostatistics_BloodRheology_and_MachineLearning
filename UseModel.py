@@ -13,6 +13,13 @@ There are two options:
     2. Create the surface plot of Casson yield stress and viscosity predicitons from 
        machine learning. Note that the model is only trained on the healthy ranges of 
        hematocrit and fibrinogen.
+       
+      
+The following files must be in the directory:
+"finalized_model_datasplit.pkl"
+"finalized_model_viscosity.sav"
+"finalized_model_yieldstress.sav"
+
 """
 
 #%% Importing necessary packages and functions
