@@ -4,7 +4,15 @@ Sean Farrington, Soham Jariwala, Matt Armstrong, Ethan Nigro, Antony Beris, and 
 Author: Sean Farrington
 October 20th, 2022
  
-This is the script to use for using the model created from main_
+This is the script for using the model developed in "Main_CreateModel.py"
+
+Run the script and follow the prompts in the command window.
+
+There are two options:
+    1. Predict a single set of Casson parameters from an input of hematocrit and fibrinogen
+    2. Create the surface plot of Casson yield stress and viscosity predicitons from 
+       machine learning. Note that the model is only trained on the healthy ranges of 
+       hematocrit and fibrinogen.
 """
 
 #%% Importing necessary packages and functions
