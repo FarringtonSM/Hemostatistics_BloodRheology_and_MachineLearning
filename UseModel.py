@@ -1,14 +1,10 @@
 """
+Code for the paper ....
+Sean Farrington, Soham Jariwala, Matt Armstrong, Ethan Nigro, Antony Beris, and Norman Wagner
 Author: Sean Farrington
-Thu Jun  16
-
-# Apostolidis Model Pseudo Data Machine Learning
+October 20th, 2022
  
-# Gaussian Process Regression
-
-# This script includes the necessary hyperparameter tuning
-
-
+This is the script to use for using the model created from main_
 """
 
 #%% Importing necessary packages and functions
