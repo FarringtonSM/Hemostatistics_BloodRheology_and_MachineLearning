@@ -132,17 +132,29 @@ DATA = pd.read_excel('HornerData_CassonFitTable.xlsx')
 donors_out = pd.DataFrame() 
 
 # Finding Healthy Range Section
-ind = DATA.index[DATA['Hematocrit (%)']<36].tolist()
+ind = DATA.index[(DATA['Hematocrit (%)']<36)&(DATA['Sex']=='F')].tolist()
 donors_out = donors_out.append(DATA.loc[ind])
 DATA.drop(index=ind,inplace=True)
-ind = DATA.index[DATA['Hematocrit (%)']>51].tolist()
+
+ind = DATA.index[(DATA['Hematocrit (%)']>47)&(DATA['Sex']=='F')].tolist()
 donors_out = donors_out.append(DATA.loc[ind])
 DATA.drop(index=ind,inplace=True)
+
+ind = DATA.index[(DATA['Hematocrit (%)']<41)&(DATA['Sex']=='M')].tolist()
+donors_out = donors_out.append(DATA.loc[ind])
+DATA.drop(index=ind,inplace=True)
+
+ind = DATA.index[(DATA['Hematocrit (%)']>51)&(DATA['Sex']=='M')].tolist()
+donors_out = donors_out.append(DATA.loc[ind])
+DATA.drop(index=ind,inplace=True)
+
 ind = DATA.index[DATA['Fibrinogen (mg/dL)']<150].tolist()
 donors_out = donors_out.append(DATA.loc[ind])
 DATA.drop(index=ind,inplace=True)
+
 ind = DATA.index[DATA['Fibrinogen (mg/dL)']>350].tolist()
 donors_out = donors_out.append(DATA.loc[ind])
+DATA.drop(index=ind,inplace=True)
 
 
 X_DATA = DATA[['Hematocrit (%)','Fibrinogen (mg/dL)']].to_numpy()
