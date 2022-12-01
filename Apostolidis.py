@@ -32,7 +32,7 @@ class Apostolidis:
             cf = cf_ms[j]
             # To choose critical hematocrit
             if cf<0.75:
-                Hc = 0.3126*cf**3-0.468*cf+0.1764
+                Hc = 0.3126*cf**2-0.468*cf+0.1764
             else:
                 Hc = 0.0012
                 
@@ -58,30 +58,3 @@ class Apostolidis:
             mu_noise.append(mu_noi)
                 
         return sig_y,mu,sig_y_noise,mu_noise
-
-# #%% Model inputs
-# # Apostolidis model parameters
-# To = 296.16   # Reference temperature, K
-# n_p = 1.67e-2 # Plasma viscosity, dyne*s/cm**
-# T = 310       # Temperature, K
-
-# # Physiological ranges from mayoclinic.org
-#     # Hematocrit, decimal from 0 to 1
-# H_m_low = 0.41 # lower healthy hematocrit, male
-# H_m_up  = 0.51 # upper healthy hematocrit, male
-# H_f_low = 0.36  # lower healthy hematocrit, female
-# H_f_up  = 0.47  # upper healthy hematocrit, female
-#     # Concentration of fibrinogen, g/dL
-# cf_low  = 0.150 # Lower bound
-# cf_up   = 0.350 # upper bound
-
-# # Full physiology range
-# H_ms   = np.linspace(0.36,H_m_up,5)
-# H_fs   = np.linspace(H_f_low,H_f_up,5)
-# cf_ms  = np.linspace(cf_low,cf_up,5)
-
-# mu_std = 0.212     # Typical standard deviation for Casson viscosity of blood
-# sig_y_std = 0.854  # Typical std for Casson yield stress of blood
-
-# p1 = Apostolidis(H_ms,cf_ms,mu_std,sig_y_std,To,T,n_p)
-# sig_y,sig_y_noise,mu,mu_noise,Hs,cfs = p1.apostFunc()
