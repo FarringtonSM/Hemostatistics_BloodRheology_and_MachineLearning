@@ -1,13 +1,15 @@
 """
+Code for the paper ....
+Sean Farrington, Soham Jariwala, Matt Armstrong, Ethan Nigro, Antony Beris, and Norman Wagner
+
 Author: Sean Farrington
-Thu Jun  16
-
-# Apostolidis Model Pseudo Data Machine Learning
+October 20th, 2022
  
-# Gaussian Process Regression
+Gaussian Process Regression for Blood Rheology
 
-# This script includes the necessary hyperparameter tuning
-
+The main purpose of this script is to use the previously developed Gaussian process 
+regression from 'GPR_testingModel.py' to make figures and relevant metrics on
+the performance of machine learning.
 
 """
 
@@ -65,9 +67,9 @@ mpl.rcParams['font.family'] = font
 
 
 #%% Load the models using pickle
-filename1 = 'finalized_model_yieldstress.sav'
-filename2 = 'finalized_model_viscosity.sav'
-filename3 = 'finalized_model_datasplit.pkl'
+filename1 = 'ML_MODELS/testing_model_yieldstress.sav'
+filename2 = 'ML_MODELS/testing_model_viscosity.sav'
+filename3 = 'ML_MODELS/testing_model_datasplit.pkl'
 
 gp_yield = pickle.load(open(filename1,'rb'))
 gp_visc = pickle.load(open(filename2,'rb'))
@@ -78,35 +80,32 @@ y = datasplits['y']
 X_test = datasplits['X_test']
 y_test = datasplits['y_test']
 
-
-
-
 #%% Make predictions on Casson parameters
-yield_pred = gp_yield.predict(X_test)
+yield_test_pred = gp_yield.predict(X_test)
 yield_train_pred = gp_yield.predict(X) # Predicted training data
 
-visc_pred = gp_visc.predict(X_test)
+visc_test_pred = gp_visc.predict(X_test)
 visc_train_pred = gp_visc.predict(X) # Predicted training data
 
 #%% Some Data labels
-yield_train = y[:,0]
-yield_test = y_test[:,0]
-visc_train = y[:,1]
-visc_test = y_test[:,1]
+yield_train = y['Casson yield stress, mPa']
+yield_test = y_test['Casson yield stress, mPa']
+visc_train = y['Casson viscosity, mPa.s']
+visc_test = y_test['Casson viscosity, mPa.s']
 
 #%% Metrics
 
 # R**2 metric
-r2_yield_test = gp_yield.score(X_test,y_test[:,0])
-r2_yield_train = gp_yield.score(X,y[:,0])
-r2_visc_test = gp_visc.score(X_test,y_test[:,1])
-r2_visc_train = gp_visc.score(X,y[:,1])
+r2_yield_test = gp_yield.score(X_test,yield_test)
+r2_yield_train = gp_yield.score(X,yield_train)
+r2_visc_test = gp_visc.score(X_test,visc_test)
+r2_visc_train = gp_visc.score(X,visc_train)
 
 # RMSE metric
 RMSE_yield_train = mse(yield_train,yield_train_pred,squared=False)
-RMSE_yield_test = mse(yield_test,yield_pred,squared=False)
+RMSE_yield_test = mse(yield_test,yield_test_pred,squared=False)
 RMSE_visc_train = mse(visc_train,visc_train_pred,squared=False)
-RMSE_visc_test = mse(visc_test,visc_pred,squared=False)
+RMSE_visc_test = mse(visc_test,visc_test_pred,squared=False)
 
 df = pd.DataFrame({
     'R**2 Casson Yield Stress Training':[r2_yield_train],
@@ -134,7 +133,7 @@ print()
 
 #%% Plotting predicted vs actual for the Cassson yield stress
 fig, ax = plt.subplots(figsize=(5,4))
-p1, = ax.plot(yield_test,yield_pred,
+p1, = ax.plot(yield_test,yield_test_pred,
         's',
         markersize = 5,
         color='red',
@@ -166,7 +165,7 @@ plt.show()
 lims = [0.9*min(visc_test),1.1*max(visc_test)]
 
 fig, ax = plt.subplots(figsize=(5,4))
-p1, = ax.plot(visc_test,visc_pred,
+p1, = ax.plot(visc_test,visc_test_pred,
               's',
               markersize= 5,
               color='red',
@@ -231,7 +230,7 @@ df = pd.DataFrame({
     "Yield Stress Machine Learning STD, mPa":ys_std,
     "Casson Yield Stress Apostolidis, mPa":ys_apost})
 
-df.to_excel("Surface Plot Data _ Yield Stress.xlsx",index=False)
+df.to_excel("DATA/Surface Plot Data _ Yield Stress.xlsx",index=False)
 
 df = pd.DataFrame({
     "Hematocrit, %":Hs,
@@ -240,4 +239,4 @@ df = pd.DataFrame({
     "Casson Viscosity Machine Learning STD, mPa":mu_std,
     "Casson Viscosity Apostolidis, mPa":mu_apost})
 
-df.to_excel("Surface Plot Data _ Casson Viscosity.xlsx",index=False)
+df.to_excel("DATA/Surface Plot Data _ Casson Viscosity.xlsx",index=False)

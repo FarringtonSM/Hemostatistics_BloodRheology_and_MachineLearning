@@ -76,9 +76,9 @@ mpl.rcParams['font.family'] = font
 
 
 #%% Load the models using pickle
-filename1 = 'finalized_model_yieldstress.sav'
-filename2 = 'finalized_model_viscosity.sav'
-filename3 = 'finalized_model_datasplit.pkl'
+filename1 = 'ML_MODELS/finalized_model_yieldstress.sav'
+filename2 = 'ML_MODELS/finalized_model_viscosity.sav'
+filename3 = 'ML_MODELS/finalized_model_data.pkl'
 
 gp_yield = pickle.load(open(filename1,'rb'))
 gp_visc = pickle.load(open(filename2,'rb'))
@@ -86,42 +86,47 @@ datasplits = pickle.load(open(filename3,'rb'))
 
 X = datasplits['X']
 y = datasplits['y']
-X_test = datasplits['X_test']
-y_test = datasplits['y_test']
+# X_test = datasplits['X_test']
+# y_test = datasplits['y_test']
 
 
 #%% Make predictions on Casson parameters
-yield_pred = gp_yield.predict(X_test)
+# yield_pred = gp_yield.predict(X_test)
 yield_train_pred = gp_yield.predict(X) # Predicted training data
 
-visc_pred = gp_visc.predict(X_test)
+# visc_pred = gp_visc.predict(X_test)
 visc_train_pred = gp_visc.predict(X) # Predicted training data
 
 #%% Some Data labels
 yield_train = y[:,0]
-yield_test = y_test[:,0]
+# yield_test = y_test[:,0]
 visc_train = y[:,1]
-visc_test = y_test[:,1]
+# visc_test = y_test[:,1]
 
 #%% Metrics
 
 # R**2 metric
-r2_yield_test = gp_yield.score(X_test,y_test[:,0])
+# r2_yield_test = gp_yield.score(X_test,y_test[:,0])
 r2_yield_train = gp_yield.score(X,y[:,0])
-r2_visc_test = gp_visc.score(X_test,y_test[:,1])
+# r2_visc_test = gp_visc.score(X_test,y_test[:,1])
 r2_visc_train = gp_visc.score(X,y[:,1])
 
 # RMSE metric
 RMSE_yield_train = mse(yield_train,yield_train_pred,squared=False)
-RMSE_yield_test = mse(yield_test,yield_pred,squared=False)
+# RMSE_yield_test = mse(yield_test,yield_pred,squared=False)
 RMSE_visc_train = mse(visc_train,visc_train_pred,squared=False)
-RMSE_visc_test = mse(visc_test,visc_pred,squared=False)
+# RMSE_visc_test = mse(visc_test,visc_pred,squared=False)
+
+# df = pd.DataFrame({
+#     'R**2 Casson Yield Stress Training':[r2_yield_train],
+#     'R**2 Casson Viscosity Training':[r2_visc_train],
+#     'R**2 Casson Yield Stress Testing':[r2_yield_test],
+#     'R**2 Casson Viscosity Testing':[r2_visc_test]})
+# df = df.transpose()
 
 df = pd.DataFrame({
     'R**2 Casson Yield Stress Training':[r2_yield_train],
-    'R**2 Casson Viscosity Training':[r2_visc_train],
-    'R**2 Casson Yield Stress Testing':[r2_yield_test],
-    'R**2 Casson Viscosity Testing':[r2_visc_test]})
+    'R**2 Casson Viscosity Training':[r2_visc_train]})
 df = df.transpose()
 
 
@@ -129,11 +134,16 @@ print("Metrics for the model you are using:")
 print(df)
 print()
 
+# df = pd.DataFrame({
+#     'RMSE Casson Yield Stress Training':[RMSE_yield_train],
+#     'RMSE Casson Viscosity Training':[RMSE_visc_train],
+#     'RMSE Casson Yield Stress Testing':[RMSE_yield_test],
+#     'RMSE Casson Viscosity Testing':[RMSE_visc_test]})
+# df = df.transpose()
+
 df = pd.DataFrame({
     'RMSE Casson Yield Stress Training':[RMSE_yield_train],
-    'RMSE Casson Viscosity Training':[RMSE_visc_train],
-    'RMSE Casson Yield Stress Testing':[RMSE_yield_test],
-    'RMSE Casson Viscosity Testing':[RMSE_visc_test]})
+    'RMSE Casson Viscosity Training':[RMSE_visc_train]})
 df = df.transpose()
 
 

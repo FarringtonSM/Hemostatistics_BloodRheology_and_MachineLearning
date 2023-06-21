@@ -91,8 +91,8 @@ y [=] rheology outputs
 y = [Casson yield stress, Casson viscosity] [=] [mPa, mPa.s]
 """
 
-RAW_DATA = pd.read_excel('HornerData_CassonFitInCassonCoordinates.xlsx')
-DATA = pd.read_excel('HornerData_CassonFitInCassonCoordinates.xlsx')
+RAW_DATA = pd.read_excel('DATA/HornerData_CassonFitTable.xlsx')
+DATA = pd.read_excel('DATA/HornerData_CassonFitTable.xlsx')
 
 donors_out = pd.DataFrame() 
 
@@ -121,7 +121,7 @@ ind = DATA.index[DATA['Fibrinogen, mg/dL']>350].tolist()
 donors_out = donors_out.append(DATA.loc[ind])
 DATA.drop(index=ind,inplace=True)
 
-donors_out.to_excel("DonorOutliers.xlsx",index=False)
+donors_out.to_excel("DATA/DonorOutliers.xlsx",index=False)
 
 Donors = DATA['donors'].to_numpy()
 X_DATA = DATA[['Hematocrit, %','Fibrinogen, mg/dL']].to_numpy()
@@ -164,9 +164,9 @@ tuned_kernel2 = gp_visc.kernel_
 
 #%% Save the models using pickle
 
-filename1 = 'finalized_model_yieldstress.sav'
-filename2 = 'finalized_model_viscosity.sav'
-filename3 = 'finalized_model_data.pkl'
+filename1 = 'ML_MODELS/finalized_model_yieldstress.sav'
+filename2 = 'ML_MODELS/finalized_model_viscosity.sav'
+filename3 = 'ML_MODELS/finalized_model_data.pkl'
 
 pickle.dump(gp_yield,open(filename1, 'wb'))
 pickle.dump(gp_visc,open(filename2,'wb'))
@@ -179,9 +179,9 @@ pickle.dump(data,open(filename3,'wb'))
 
 
 #%% Load the models using pickle
-filename1 = 'finalized_model_yieldstress.sav'
-filename2 = 'finalized_model_viscosity.sav'
-filename3 = 'finalized_model_data.pkl'
+filename1 = 'ML_MODELS/finalized_model_yieldstress.sav'
+filename2 = 'ML_MODELS/finalized_model_viscosity.sav'
+filename3 = 'ML_MODELS/finalized_model_data.pkl'
 
 gp_yield = pickle.load(open(filename1,'rb'))
 gp_visc = pickle.load(open(filename2,'rb'))
