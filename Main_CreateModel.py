@@ -39,7 +39,7 @@ if not sys.warnoptions:
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.metrics import r2_score
 from sklearn.model_selection import GridSearchCV, KFold
-from sklearn.gaussian_process.kernels import Matern, WhiteKernel, ConstantKernel, RBF, RationalQuadratic
+from sklearn.gaussian_process.kernels import Matern, WhiteKernel, ConstantKernel as C, RBF, RationalQuadratic
 
 # Method for saving figures
 import os
